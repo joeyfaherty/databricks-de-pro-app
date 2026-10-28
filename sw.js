@@ -1,5 +1,5 @@
 // App shell is cache-first; questions.json is network-first so new questions arrive when online.
-const CACHE = "depro-v1";
+const CACHE = "depro-v2";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", e => {

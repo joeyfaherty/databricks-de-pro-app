@@ -71,6 +71,13 @@ textarea { width: 100%; height: 160px; font: 12px/1.4 ui-monospace, monospace; b
 .seg button { flex: 1; border: 0; background: var(--card); padding: 8px; font-size: 14px; }
 .seg button.on { background: var(--accent); color: var(--accent-ink); }
 details summary { cursor: pointer; }
+pre.code { font: 13px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--chip); border-radius: 8px;
+  padding: 10px; margin: 8px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.why { margin: 8px 0 4px; padding-left: 0; list-style: none; font-size: 14px; color: var(--muted); }
+.why li { margin: 4px 0; }
+.why b { color: var(--ink); }
+.exam { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: var(--card);
+  border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin: 8px 0; }
 </style>
 </head>
 <body>
@@ -89,9 +96,32 @@ let DATA = null;            // questions.json payload
 let byId = {};
 let attempts = LS.get("dep.attempts", []);
 let prefs = LS.get("dep.prefs", { sections: [], size: 10 });
-let session = null;         // {mode, ids, i, answers:{qid:origLetter}, order:{qid:[orig letters in display order]}, start, limitMs}
+let session = null;         // {mode, ids, i, answers:{qid:origLetter}, order:{qid:[orig letters in display order]}, start, limitMs, examId?}
+let examResults = LS.get("dep.examResults", {}); // examId -> [{pct, date, secs}]
 
 function save() { LS.set("dep.attempts", attempts); LS.set("dep.prefs", prefs); LS.set("dep.session", session); }
+
+// stems carry code as 4-space-indented lines; render those runs as code blocks
+function stemHtml(stem) {
+  const out = []; let code = [];
+  const flush = () => { if (code.length) { out.push(`<pre class="code">${esc(code.join("\n"))}</pre>`); code = []; } };
+  for (const line of String(stem).split("\n")) {
+    if (/^ {4}/.test(line)) code.push(line.slice(4));
+    else { flush(); if (line.trim()) out.push(`<div>${esc(line)}</div>`); }
+  }
+  flush();
+  return out.join("");
+}
+
+// "why not" lines, labelled with the letters as displayed in this session
+function whyHtml(q, order) {
+  const w = q.why_wrong || {};
+  const items = (order || LETTERS).map((orig, k) => orig !== q.answer && w[orig]
+    ? `<li><b>${LETTERS[k]}</b> ${esc(w[orig])}</li>` : "").join("");
+  return items ? `<ul class="why">${items}</ul>` : "";
+}
+
+const isTimed = mode => mode === "mock" || mode === "exam";
 
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 
@@ -148,18 +178,18 @@ function pickMock() {
   return shuffle(ids);
 }
 
-function start(mode, ids) {
+function start(mode, ids, extra) {
   if (!ids.length) { alert(mode === "missed" ? "No missed questions in the selected sections." : "No questions in the selected sections."); return; }
   const order = {};
   for (const id of ids) order[id] = shuffle(LETTERS.filter(l => byId[id].options[l] !== undefined));
   session = { mode, ids, i: 0, answers: {}, order, start: Date.now(),
-    limitMs: mode === "mock" ? ids.length * 2 * 60 * 1000 : null, revealed: false };
+    limitMs: isTimed(mode) ? ids.length * 2 * 60 * 1000 : null, revealed: false, ...(extra || {}) };
   save(); renderQuestion();
 }
 
 function record(q, chosen, mode) {
   attempts.push({ qid: q.id, objective: q.objective, chosen, answer: q.answer, correct: chosen === q.answer,
-    mode: mode === "mock" ? "app-mock" : "app", ts: new Date().toISOString() });
+    mode: mode === "mock" ? "app-mock" : String(mode).startsWith("exam") ? "app-" + mode : "app", ts: new Date().toISOString() });
   save();
 }
 
@@ -186,7 +216,14 @@ function renderHome() {
     <div class="seg" id="size" style="margin-top:10px">${[10, 20, 0].map(n => `<button data-n="${n}" class="${prefs.size === n ? "on" : ""}">${n ? n + " Qs" : "All"}</button>`).join("")}</div>
     <button class="btn" id="go">Practice${prefs.sections.length ? " S" + prefs.sections.join(", S") : ""}</button>
     <button class="btn ghost" id="missed" ${missedCount ? "" : "disabled"}>Redo missed (${missedCount})</button>
-    <button class="btn ghost" id="mock">Mock exam · ${Math.min(60, DATA.questions.length)} Qs · timed</button>
+    <button class="btn ghost" id="mock">Random mock · ${Math.min(60, DATA.questions.length)} Qs · timed</button>
+    ${(DATA.exams || []).length ? `<h2>Practice exams</h2>
+    <div class="sub">Fixed 60-question exams weighted like the real one · 120 min · no feedback until the end</div>
+    ${DATA.exams.map(e => { const r = examResults[e.id] || [];
+      const best = r.length ? Math.max(...r.map(x => x.pct)) : null; const last = r[r.length - 1];
+      return `<button class="exam" data-exam="${e.id}"><div class="grow"><b>${esc(e.name)}</b>
+        <div class="sub">${e.qids.length} Qs${last ? ` · last ${last.pct}% (${last.date})` : " · not taken"}</div></div>
+        <div class="pct">${best === null ? "–" : best + "%"}</div></button>`; }).join("")}` : ""}
     <h2>Sections</h2>
     <div class="card">${DATA.sections.map(s => {
       const x = st[s.id];
@@ -209,6 +246,11 @@ function renderHome() {
   document.getElementById("go").onclick = () => start("practice", pickPractice(false));
   document.getElementById("missed").onclick = () => start("missed", pickPractice(true));
   document.getElementById("mock").onclick = () => { if (confirm(`Start a ${Math.min(60, DATA.questions.length)}-question timed mock? No feedback until the end.`)) start("mock", pickMock()); };
+  $app.querySelectorAll("[data-exam]").forEach(b => b.onclick = () => {
+    const e = DATA.exams.find(x => x.id === +b.dataset.exam);
+    if (confirm(`Start ${e.name}? ${e.qids.length} questions, ${e.qids.length * 2} minutes, no feedback until the end.`))
+      start("exam", shuffle(e.qids), { examId: e.id });
+  });
   document.getElementById("export").onclick = exportAnswers;
   document.getElementById("reset").onclick = () => {
     if (confirm("Delete all answers stored on this phone? Export first if you want to keep them.")) {
@@ -222,7 +264,7 @@ function fmtTime(ms) { const s = Math.max(0, Math.round(ms / 1000)); return `${M
 let timer = null;
 function renderQuestion() {
   clearInterval(timer);
-  const s = session, qid = s.ids[s.i], q = byId[qid], mock = s.mode === "mock";
+  const s = session, qid = s.ids[s.i], q = byId[qid], mock = isTimed(s.mode);
   const order = s.order[qid];
   const chosen = s.answers[qid];
   const revealed = !mock && chosen !== undefined;
@@ -238,11 +280,12 @@ function renderQuestion() {
     <div class="top row"><button class="x" id="quit" aria-label="Quit">✕</button>
       <div class="grow sub">${s.i + 1} / ${s.ids.length}${mock ? ` · <span id="clock"></span>` : ""}</div>
       <span class="tag">S${q.section} · ${esc(q.objective)}</span></div>
-    <div class="stem">${esc(q.stem)}</div>
+    <div class="stem">${stemHtml(q.stem)}</div>
     ${optHtml}
     ${revealed ? `<div class="card">
       <div class="verdict ${chosen === q.answer ? "good" : "bad"}">${chosen === q.answer ? "Correct" : "Answer: " + keyLetter}</div>
       <div>${esc(q.explanation)}</div>
+      ${whyHtml(q, order)}
       ${q.evidence ? `<div class="ev">${esc(q.evidence)}</div>` : ""}
       <a href="${esc(q.doc)}" target="_blank" rel="noopener">Source ↗</a>
       <div class="sub" style="margin-top:6px">${esc(sec.name)}</div></div>` : ""}
@@ -276,8 +319,10 @@ function renderQuestion() {
 
 function finish() {
   clearInterval(timer);
-  const s = session, mock = s.mode === "mock";
-  if (mock) for (const id of s.ids) if (s.answers[id] !== undefined) record(byId[id], s.answers[id], "mock");
+  const s = session, mock = isTimed(s.mode);
+  const examName = s.mode === "exam" ? (DATA.exams.find(e => e.id === s.examId) || {}).name : null;
+  if (mock) for (const id of s.ids) if (s.answers[id] !== undefined)
+    record(byId[id], s.answers[id], s.mode === "exam" ? "exam-" + s.examId : "mock");
   const answered = s.ids.filter(id => s.answers[id] !== undefined);
   const right = answered.filter(id => s.answers[id] === byId[id].answer);
   const total = mock ? s.ids.length : answered.length;
@@ -288,8 +333,12 @@ function finish() {
   }
   const wrong = (mock ? s.ids : answered).filter(id => s.answers[id] !== byId[id].answer);
   const pct = total ? Math.round(right.length / total * 100) : 0;
+  if (examName) {
+    (examResults[s.examId] ||= []).push({ pct, date: new Date().toISOString().slice(0, 10), secs: Math.round((Date.now() - s.start) / 1000) });
+    LS.set("dep.examResults", examResults);
+  }
   $app.innerHTML = `
-    <h1>${mock ? "Mock result" : "Session done"}</h1>
+    <h1>${examName ? esc(examName) : mock ? "Mock result" : "Session done"}</h1>
     <div class="card row"><div class="grow"><div class="big">${pct}%</div>
       <div class="sub">${right.length}/${total} correct${mock ? ` · ${fmtTime(Date.now() - s.start)} used · target ≥ 70%` : ""}</div></div></div>
     <div class="card">${Object.entries(bySec).sort((a, b) => a[0] - b[0]).map(([id, b]) => `
@@ -298,10 +347,10 @@ function finish() {
     ${wrong.length ? `<h2>Review (${wrong.length})</h2>` : ""}
     ${wrong.map(id => { const q = byId[id]; const c = s.answers[id];
       return `<details class="card"><summary><span class="tag">${esc(q.objective)}</span> ${esc(q.stem.slice(0, 90))}…</summary>
-        <div class="stem" style="margin-top:8px">${esc(q.stem)}</div>
+        <div class="stem" style="margin-top:8px">${stemHtml(q.stem)}</div>
         <p><span class="verdict bad">You: ${c ? esc(q.options[c]) : "(no answer)"}</span></p>
         <p><span class="verdict good">Answer: ${esc(q.options[q.answer])}</span></p>
-        <div>${esc(q.explanation)}</div>${q.evidence ? `<div class="ev">${esc(q.evidence)}</div>` : ""}
+        <div>${esc(q.explanation)}</div>${whyHtml({ ...q, why_wrong: c && q.why_wrong && q.why_wrong[c] ? { [c]: q.why_wrong[c] } : {} }, s.order[id])}${q.evidence ? `<div class="ev">${esc(q.evidence)}</div>` : ""}
         <a href="${esc(q.doc)}" target="_blank" rel="noopener">Source ↗</a></details>`; }).join("")}
     <div class="dock"><button class="btn" id="home">Done</button></div>`;
   session = null; save();
