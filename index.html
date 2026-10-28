@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DE Pro Drill</title>
+<meta name="description" content="Docs-grounded practice questions for the Databricks Data Engineer Professional exam (Oct 2026).">
+<meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root {
+  --bg: #f6f7f9; --card: #ffffff; --ink: #14181f; --muted: #5d6673; --line: #dfe3e8;
+  --accent: #0f766e; --accent-ink: #ffffff; --good: #15803d; --good-bg: #e7f6ec;
+  --bad: #b42318; --bad-bg: #fdecea; --sel: #e6f2f1; --chip: #eef1f4;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1116; --card: #171b22; --ink: #e8ebf0; --muted: #9aa4b2; --line: #2a303a;
+    --accent: #2dd4bf; --accent-ink: #062b27; --good: #4ade80; --good-bg: #12301f;
+    --bad: #f87171; --bad-bg: #3a1717; --sel: #123533; --chip: #222833;
+  }
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.5 -apple-system, "Segoe UI", Roboto, system-ui, sans-serif; }
+main { max-width: 680px; margin: 0 auto; padding: 12px 16px calc(96px + env(safe-area-inset-bottom)); }
+h1 { font-size: 22px; margin: 8px 0 2px; }
+h2 { font-size: 16px; margin: 20px 0 8px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.sub { color: var(--muted); font-size: 13px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin: 10px 0; }
+.row { display: flex; align-items: center; gap: 10px; }
+.grow { flex: 1; min-width: 0; }
+.big { font-size: 28px; font-weight: 700; }
+button { font: inherit; color: inherit; cursor: pointer; }
+.btn { display: block; width: 100%; border: 0; border-radius: 12px; padding: 14px; font-weight: 600;
+  background: var(--accent); color: var(--accent-ink); margin: 8px 0; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn:disabled { opacity: .45; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--line); background: var(--chip); border-radius: 999px; padding: 6px 12px; font-size: 14px; }
+.chip.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.bar { height: 6px; background: var(--chip); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+.bar > i { display: block; height: 100%; background: var(--accent); }
+.sec { padding: 10px 0; border-bottom: 1px solid var(--line); }
+.sec:last-child { border-bottom: 0; }
+.sec .name { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pct { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 48px; text-align: right; }
+.top { position: sticky; top: 0; background: var(--bg); padding: 8px 0; z-index: 2; }
+.x { border: 0; background: none; font-size: 22px; padding: 4px 8px; }
+.tag { font-size: 12px; background: var(--chip); border-radius: 6px; padding: 2px 8px; color: var(--muted); }
+.stem { font-size: 17px; white-space: pre-wrap; }
+.opt { display: flex; gap: 12px; width: 100%; text-align: left; background: var(--card); border: 1.5px solid var(--line);
+  border-radius: 12px; padding: 12px; margin: 10px 0; align-items: flex-start; }
+.opt b { flex: none; width: 28px; height: 28px; border-radius: 8px; background: var(--chip); display: grid; place-items: center; }
+.opt span { white-space: pre-wrap; word-break: break-word; }
+.opt.sel { border-color: var(--accent); background: var(--sel); }
+.opt.good { border-color: var(--good); background: var(--good-bg); }
+.opt.bad { border-color: var(--bad); background: var(--bad-bg); }
+.verdict { font-weight: 700; }
+.verdict.good { color: var(--good); } .verdict.bad { color: var(--bad); }
+.ev { border-left: 3px solid var(--line); padding-left: 10px; color: var(--muted); font-style: italic; margin: 8px 0; }
+a { color: var(--accent); }
+.dock { position: fixed; left: 0; right: 0; bottom: 0; background: var(--bg); border-top: 1px solid var(--line);
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+.dock .btn { max-width: 648px; margin: 0 auto; }
+textarea { width: 100%; height: 160px; font: 12px/1.4 ui-monospace, monospace; background: var(--card); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 10px; padding: 8px; }
+.seg { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.seg button { flex: 1; border: 0; background: var(--card); padding: 8px; font-size: 14px; }
+.seg button.on { background: var(--accent); color: var(--accent-ink); }
+details summary { cursor: pointer; }
+</style>
+</head>
+<body>
+<main id="app"><p class="sub">Loading questions…</p></main>
+<script>
+"use strict";
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const $app = document.getElementById("app");
+const LETTERS = ["A", "B", "C", "D"];
+
+let DATA = null;            // questions.json payload
+let byId = {};
+let attempts = LS.get("dep.attempts", []);
+let prefs = LS.get("dep.prefs", { sections: [], size: 10 });
+let session = null;         // {mode, ids, i, answers:{qid:origLetter}, order:{qid:[orig letters in display order]}, start, limitMs}
+
+function save() { LS.set("dep.attempts", attempts); LS.set("dep.prefs", prefs); LS.set("dep.session", session); }
+
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function lastAttempt() { const m = {}; for (const a of attempts) m[a.qid] = a; return m; }
+
+function stats() {
+  const per = {}; // section -> {n, ok}
+  const recent = {}; // last 10 per section
+  for (const a of attempts) {
+    const q = byId[a.qid]; if (!q) continue;
+    (recent[q.section] ||= []).push(a.correct);
+  }
+  for (const s of DATA.sections) {
+    const r = (recent[s.id] || []).slice(-10);
+    const total = DATA.questions.filter(q => q.section === s.id).length;
+    const seen = new Set(attempts.filter(a => byId[a.qid] && byId[a.qid].section === s.id).map(a => a.qid)).size;
+    per[s.id] = { n: r.length, acc: r.length ? r.filter(Boolean).length / r.length : null, total, seen };
+  }
+  return per;
+}
+
+function pool() {
+  const secs = prefs.sections.length ? prefs.sections : DATA.sections.map(s => s.id);
+  return DATA.questions.filter(q => secs.includes(q.section));
+}
+
+function pickPractice(missedOnly) {
+  const last = lastAttempt();
+  let qs = pool();
+  if (missedOnly) qs = qs.filter(q => last[q.id] && !last[q.id].correct);
+  const unseen = shuffle(qs.filter(q => !last[q.id]));
+  const missed = shuffle(qs.filter(q => last[q.id] && !last[q.id].correct));
+  const rest = shuffle(qs.filter(q => last[q.id] && last[q.id].correct))
+    .sort((a, b) => (last[a.id].ts < last[b.id].ts ? -1 : 1)); // stalest first
+  const n = prefs.size === 0 ? qs.length : prefs.size;
+  return [...missed, ...unseen, ...rest].slice(0, n).map(q => q.id);
+}
+
+function pickMock() {
+  const n = Math.min(60, DATA.questions.length);
+  const want = {};
+  let given = 0;
+  const raw = DATA.sections.map(s => [s.id, n * s.weight / 100]);
+  for (const [id, v] of raw) { want[id] = Math.floor(v); given += want[id]; }
+  raw.sort((a, b) => (b[1] % 1) - (a[1] % 1));
+  for (let i = 0; given < n; i++, given++) want[raw[i % raw.length][0]]++;
+  let ids = [], spare = [];
+  for (const s of DATA.sections) {
+    const qs = shuffle(DATA.questions.filter(q => q.section === s.id));
+    ids.push(...qs.slice(0, want[s.id]).map(q => q.id));
+    spare.push(...qs.slice(want[s.id]).map(q => q.id));
+  }
+  ids.push(...shuffle(spare).slice(0, n - ids.length)); // top up when a section is thin
+  return shuffle(ids);
+}
+
+function start(mode, ids) {
+  if (!ids.length) { alert(mode === "missed" ? "No missed questions in the selected sections." : "No questions in the selected sections."); return; }
+  const order = {};
+  for (const id of ids) order[id] = shuffle(LETTERS.filter(l => byId[id].options[l] !== undefined));
+  session = { mode, ids, i: 0, answers: {}, order, start: Date.now(),
+    limitMs: mode === "mock" ? ids.length * 2 * 60 * 1000 : null, revealed: false };
+  save(); renderQuestion();
+}
+
+function record(q, chosen, mode) {
+  attempts.push({ qid: q.id, objective: q.objective, chosen, answer: q.answer, correct: chosen === q.answer,
+    mode: mode === "mock" ? "app-mock" : "app", ts: new Date().toISOString() });
+  save();
+}
+
+/* ---------------- views ---------------- */
+
+function renderHome() {
+  session = null; save();
+  const st = stats();
+  const all = attempts.filter(a => byId[a.qid]);
+  const ok = all.filter(a => a.correct).length;
+  const pending = attempts.length - LS.get("dep.exported", 0);
+  const last = lastAttempt();
+  const missedCount = pool().filter(q => last[q.id] && !last[q.id].correct).length;
+  $app.innerHTML = `
+    <h1>DE Pro Drill</h1>
+    <div class="sub">${esc(DATA.exam)} · ${DATA.questions.length} docs-grounded questions · v${esc(DATA.version)}</div>
+    <div class="card row">
+      <div class="grow"><div class="big">${all.length ? Math.round(ok / all.length * 100) + "%" : "–"}</div>
+      <div class="sub">${all.length} answered · ${new Set(all.map(a => a.qid)).size}/${DATA.questions.length} questions seen</div></div>
+    </div>
+    <h2>Practice</h2>
+    <div class="chips">${DATA.sections.map(s => `<button class="chip ${prefs.sections.includes(s.id) ? "on" : ""}" data-sec="${s.id}">S${s.id}</button>`).join("")}
+      <button class="chip ${prefs.sections.length ? "" : "on"}" data-sec="all">All</button></div>
+    <div class="seg" id="size" style="margin-top:10px">${[10, 20, 0].map(n => `<button data-n="${n}" class="${prefs.size === n ? "on" : ""}">${n ? n + " Qs" : "All"}</button>`).join("")}</div>
+    <button class="btn" id="go">Practice${prefs.sections.length ? " S" + prefs.sections.join(", S") : ""}</button>
+    <button class="btn ghost" id="missed" ${missedCount ? "" : "disabled"}>Redo missed (${missedCount})</button>
+    <button class="btn ghost" id="mock">Mock exam · ${Math.min(60, DATA.questions.length)} Qs · timed</button>
+    <h2>Sections</h2>
+    <div class="card">${DATA.sections.map(s => {
+      const x = st[s.id];
+      return `<div class="sec"><div class="row"><div class="grow name">S${s.id} · ${esc(s.name)} <span class="sub">(${s.weight}%)</span></div>
+        <div class="pct">${x.acc === null ? "–" : Math.round(x.acc * 100) + "%"}</div></div>
+        <div class="sub">${x.seen}/${x.total} seen${x.total ? "" : " · no questions yet"}</div>
+        <div class="bar"><i style="width:${x.total ? x.seen / x.total * 100 : 0}%"></i></div></div>`;
+    }).join("")}</div>
+    <h2>Sync</h2>
+    <button class="btn ghost" id="export" ${pending > 0 ? "" : "disabled"}>Export answers (${Math.max(pending, 0)} new)</button>
+    <div class="sub">Paste the export into Claude in the repo, or run <code>pbpaste | python3 scripts/tracker.py log</code>.</div>
+    <button class="btn ghost" id="reset" style="margin-top:24px">Reset progress</button>`;
+  $app.querySelectorAll("[data-sec]").forEach(b => b.onclick = () => {
+    const v = b.dataset.sec;
+    if (v === "all") prefs.sections = [];
+    else { const id = +v; prefs.sections = prefs.sections.includes(id) ? prefs.sections.filter(x => x !== id) : [...prefs.sections, id].sort(); }
+    save(); renderHome();
+  });
+  $app.querySelectorAll("#size button").forEach(b => b.onclick = () => { prefs.size = +b.dataset.n; save(); renderHome(); });
+  document.getElementById("go").onclick = () => start("practice", pickPractice(false));
+  document.getElementById("missed").onclick = () => start("missed", pickPractice(true));
+  document.getElementById("mock").onclick = () => { if (confirm(`Start a ${Math.min(60, DATA.questions.length)}-question timed mock? No feedback until the end.`)) start("mock", pickMock()); };
+  document.getElementById("export").onclick = exportAnswers;
+  document.getElementById("reset").onclick = () => {
+    if (confirm("Delete all answers stored on this phone? Export first if you want to keep them.")) {
+      attempts = []; LS.set("dep.exported", 0); save(); renderHome();
+    }
+  };
+}
+
+function fmtTime(ms) { const s = Math.max(0, Math.round(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; }
+
+let timer = null;
+function renderQuestion() {
+  clearInterval(timer);
+  const s = session, qid = s.ids[s.i], q = byId[qid], mock = s.mode === "mock";
+  const order = s.order[qid];
+  const chosen = s.answers[qid];
+  const revealed = !mock && chosen !== undefined;
+  const optHtml = order.map((orig, k) => {
+    let cls = "";
+    if (revealed) cls = orig === q.answer ? "good" : (orig === chosen ? "bad" : "");
+    else if (orig === chosen) cls = "sel";
+    return `<button class="opt ${cls}" data-o="${orig}" ${revealed ? "disabled" : ""}><b>${LETTERS[k]}</b><span>${esc(q.options[orig])}</span></button>`;
+  }).join("");
+  const keyLetter = LETTERS[order.indexOf(q.answer)];
+  const sec = DATA.sections.find(x => x.id === q.section);
+  $app.innerHTML = `
+    <div class="top row"><button class="x" id="quit" aria-label="Quit">✕</button>
+      <div class="grow sub">${s.i + 1} / ${s.ids.length}${mock ? ` · <span id="clock"></span>` : ""}</div>
+      <span class="tag">S${q.section} · ${esc(q.objective)}</span></div>
+    <div class="stem">${esc(q.stem)}</div>
+    ${optHtml}
+    ${revealed ? `<div class="card">
+      <div class="verdict ${chosen === q.answer ? "good" : "bad"}">${chosen === q.answer ? "Correct" : "Answer: " + keyLetter}</div>
+      <div>${esc(q.explanation)}</div>
+      ${q.evidence ? `<div class="ev">${esc(q.evidence)}</div>` : ""}
+      <a href="${esc(q.doc)}" target="_blank" rel="noopener">Source ↗</a>
+      <div class="sub" style="margin-top:6px">${esc(sec.name)}</div></div>` : ""}
+    <div class="dock"><button class="btn" id="next" ${mock && chosen === undefined ? "disabled" : (!mock && !revealed ? "disabled" : "")}>
+      ${s.i + 1 === s.ids.length ? "Finish" : "Next"}</button></div>`;
+  $app.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    if (revealed) return;
+    s.answers[qid] = b.dataset.o;
+    if (!mock) record(q, b.dataset.o, s.mode);
+    save(); renderQuestion();
+  });
+  document.getElementById("next").onclick = () => {
+    if (s.i + 1 >= s.ids.length) return finish();
+    s.i++; save(); renderQuestion(); window.scrollTo(0, 0);
+  };
+  document.getElementById("quit").onclick = () => {
+    if (mock && !confirm("Abandon this mock? Answers so far won't be scored.")) return;
+    if (!mock && Object.keys(s.answers).length) return finish();
+    renderHome();
+  };
+  if (mock) {
+    const tick = () => {
+      const left = s.limitMs - (Date.now() - s.start);
+      const el = document.getElementById("clock");
+      if (el) el.textContent = left > 0 ? fmtTime(left) + " left" : "time up";
+      if (left <= 0) { clearInterval(timer); alert("Time is up."); finish(); }
+    };
+    tick(); timer = setInterval(tick, 1000);
+  }
+}
+
+function finish() {
+  clearInterval(timer);
+  const s = session, mock = s.mode === "mock";
+  if (mock) for (const id of s.ids) if (s.answers[id] !== undefined) record(byId[id], s.answers[id], "mock");
+  const answered = s.ids.filter(id => s.answers[id] !== undefined);
+  const right = answered.filter(id => s.answers[id] === byId[id].answer);
+  const total = mock ? s.ids.length : answered.length;
+  const bySec = {};
+  for (const id of (mock ? s.ids : answered)) {
+    const q = byId[id]; const b = (bySec[q.section] ||= { n: 0, ok: 0 });
+    b.n++; if (s.answers[id] === q.answer) b.ok++;
+  }
+  const wrong = (mock ? s.ids : answered).filter(id => s.answers[id] !== byId[id].answer);
+  const pct = total ? Math.round(right.length / total * 100) : 0;
+  $app.innerHTML = `
+    <h1>${mock ? "Mock result" : "Session done"}</h1>
+    <div class="card row"><div class="grow"><div class="big">${pct}%</div>
+      <div class="sub">${right.length}/${total} correct${mock ? ` · ${fmtTime(Date.now() - s.start)} used · target ≥ 70%` : ""}</div></div></div>
+    <div class="card">${Object.entries(bySec).sort((a, b) => a[0] - b[0]).map(([id, b]) => `
+      <div class="sec row"><div class="grow name">S${id} · ${esc(DATA.sections.find(x => x.id === +id).name)}</div>
+      <div class="pct">${b.ok}/${b.n}</div></div>`).join("")}</div>
+    ${wrong.length ? `<h2>Review (${wrong.length})</h2>` : ""}
+    ${wrong.map(id => { const q = byId[id]; const c = s.answers[id];
+      return `<details class="card"><summary><span class="tag">${esc(q.objective)}</span> ${esc(q.stem.slice(0, 90))}…</summary>
+        <div class="stem" style="margin-top:8px">${esc(q.stem)}</div>
+        <p><span class="verdict bad">You: ${c ? esc(q.options[c]) : "(no answer)"}</span></p>
+        <p><span class="verdict good">Answer: ${esc(q.options[q.answer])}</span></p>
+        <div>${esc(q.explanation)}</div>${q.evidence ? `<div class="ev">${esc(q.evidence)}</div>` : ""}
+        <a href="${esc(q.doc)}" target="_blank" rel="noopener">Source ↗</a></details>`; }).join("")}
+    <div class="dock"><button class="btn" id="home">Done</button></div>`;
+  session = null; save();
+  document.getElementById("home").onclick = renderHome;
+}
+
+async function exportAnswers() {
+  const from = LS.get("dep.exported", 0);
+  const rows = attempts.slice(from);
+  const text = rows.map(a => JSON.stringify({ qid: a.qid, objective: a.objective, chosen: a.chosen, answer: a.answer, mode: a.mode, ts: a.ts })).join("\n");
+  const done = () => { LS.set("dep.exported", attempts.length); renderHome(); };
+  try {
+    if (navigator.share) { await navigator.share({ title: "DE Pro answers", text }); return done(); }
+  } catch (e) { if (e && e.name === "AbortError") return; }
+  try { await navigator.clipboard.writeText(text); alert(`Copied ${rows.length} answers to the clipboard.`); return done(); } catch {}
+  $app.innerHTML = `<h1>Export</h1><p class="sub">Copy this text, then tap Done.</p><textarea readonly>${esc(text)}</textarea>
+    <button class="btn" id="d">Done (mark exported)</button><button class="btn ghost" id="c">Cancel</button>`;
+  document.getElementById("d").onclick = done;
+  document.getElementById("c").onclick = renderHome;
+}
+
+async function boot() {
+  try {
+    const r = await fetch("questions.json", { cache: "no-cache" });
+    DATA = await r.json();
+  } catch (e) {
+    $app.innerHTML = `<p>Couldn't load questions.json. Open the app once while online.</p>`; return;
+  }
+  byId = Object.fromEntries(DATA.questions.map(q => [q.id, q]));
+  const saved = LS.get("dep.session", null);
+  if (saved && saved.ids && saved.ids.every(id => byId[id])) { session = saved; renderQuestion(); }
+  else renderHome();
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+boot();
+</script>
+</body>
+</html>

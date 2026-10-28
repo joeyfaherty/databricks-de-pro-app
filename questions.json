@@ -1,0 +1,726 @@
+{
+ "version": "3af430c367",
+ "generated": "2026-10-28T12:30:54+00:00",
+ "exam": "Databricks Certified Data Engineer Professional — New exam, live from 2026-10-09",
+ "sections": [
+  {
+   "id": 1,
+   "name": "Developing Code for Data Processing using Python and SQL",
+   "weight": 23,
+   "objectives": {
+    "1.01": "Implement scalable Python project structures for Declarative Automation Bundles (formerly Databricks Asset Bundles / DABs) to support modular development and CI/CD integration.",
+    "1.02": "Apply troubleshooting techniques to dependency conflicts and installation failures for external libraries (PyPI, local wheels, source archives) across serverless, pipeline, and bundle-deployed environments.",
+    "1.03": "Develop User-Defined Functions (UDFs) using Pandas, Python, and SQL, including Unity Catalog functions for the given constraints.",
+    "1.04": "Create production-ready data pipelines for streaming data using Lakeflow Declarative Pipelines and Auto Loader.",
+    "1.05": "Create and automate ETL workloads using Lakeflow Jobs via the UI, API, and CLI.",
+    "1.06": "Choose between a streaming table and a materialized view for a given latency, cost, and refresh requirement.",
+    "1.07": "Implement CDC pipelines using AUTO CDC APIs (formerly APPLY CHANGES) in Lakeflow Declarative Pipelines, including SCD Type 1 and Type 2 via stored_as_scd_type.",
+    "1.08": "Choose between Spark Structured Streaming and Apache Spark Declarative Pipelines for scalable ETL given operational constraints.",
+    "1.09": "Create Lakeflow Jobs that use control-flow operators such as If/Else conditions and For Each loops.",
+    "1.10": "Choose appropriate compute and configuration for environments and dependencies, including serverless compute (serverless environments, dependency management, performance mode), high-memory notebook tasks, and auto-optimization settings (e.g., disallowing retries).",
+    "1.11": "Develop unit and integration tests using assertDataFrameEqual, assertSchemaEqual, DataFrame.transform, and testing frameworks to ensure code correctness.",
+    "1.12": "Apply Structured Streaming stateful-processing semantics, including watermarks, output modes, foreachBatch, and checkpoints for fault-tolerant exactly-once state recovery."
+   }
+  },
+  {
+   "id": 2,
+   "name": "Data Ingestion & Acquisition",
+   "weight": 12,
+   "objectives": {
+    "2.01": "Develop data ingestion pipelines to ingest a variety of data formats, including Delta Lake, Parquet, JSON, Iceberg, CSV, and Binary from diverse sources such as message buses (Kafka, Kinesis, Pub/Sub) and cloud storage.",
+    "2.02": "Configure incremental CDC pipelines using Lakeflow Pipelines with Delta or Iceberg as the target table format.",
+    "2.03": "Configure CDC ingestion pipelines from relational database sources, including SQL Server, MySQL, and PostgreSQL, using Lakeflow Connect.",
+    "2.04": "Implement OpenSharing (D2D and Databricks-to-Open) and Clean Rooms for privacy-preserving collaboration.",
+    "2.05": "Configure Lakehouse Federation with governance across supported source systems, applying UC permissions and connection-level credentials."
+   }
+  },
+  {
+   "id": 3,
+   "name": "Data Manipulation",
+   "weight": 12,
+   "objectives": {
+    "3.01": "Apply advanced data transformations, including window functions, joins, and aggregations, using Spark SQL and PySpark to process large datasets.",
+    "3.02": "Develop a model and query semi-structured data using the VARIANT data type and related functions (e.g., parse_json, variant_get).",
+    "3.03": "Apply AI functions, including ai_query, to perform model inference within data pipelines for enrichment and classification tasks.",
+    "3.04": "Implement data quality expectations in Lakeflow Declarative Pipelines to quarantine, drop, or fail on bad records."
+   }
+  },
+  {
+   "id": 4,
+   "name": "Monitoring and Alerting",
+   "weight": 10,
+   "objectives": {
+    "4.01": "Use Databricks system tables (billing, compute, access, lakeflow) for cost analysis, auditing, and workload monitoring.",
+    "4.02": "Use Databricks REST APIs / CLI and SDK for monitoring and analyzing jobs and pipelines.",
+    "4.03": "Use Apache Spark Declarative Pipelines event logs to monitor pipeline health and data quality.",
+    "4.04": "Use Databricks Lakehouse alerts to monitor governed business metrics, data quality and anomaly signals, usage and cost, SQL warehouse/query health, audit and security events, AI agent quality, and Lakeflow Job branching.",
+    "4.05": "Use Lakeflow Jobs UI and Jobs API to monitor job status and performance metrics."
+   }
+  },
+  {
+   "id": 5,
+   "name": "Cost & Performance Optimization",
+   "weight": 15,
+   "objectives": {
+    "5.01": "Explain how Unity Catalog managed tables, Predictive Optimization, and Liquid Clustering reduce operational and maintenance overhead for a given workload.",
+    "5.02": "Choose the appropriate Delta optimization technique (deletion vectors, Liquid Clustering, CLUSTER BY AUTO) for a given table access pattern.",
+    "5.03": "Understand how caching (Delta cache) improves query performance for repeated reads of the same data.",
+    "5.04": "Apply Change Data Feed (CDF) to expose row-level changes (updates/deletes) for efficient incremental downstream processing.",
+    "5.05": "Use the query profile to identify performance bottlenecks, such as data-skipping inefficiencies, join strategies, and shuffle operations.",
+    "5.06": "Compare Liquid Clustering vs partitioning/ZORDER for a given table size and query pattern."
+   }
+  },
+  {
+   "id": 6,
+   "name": "Ensuring Data Security and Compliance",
+   "weight": 8,
+   "objectives": {
+    "6.01": "Apply least-privilege access control lists (ACLs) to secure Unity Catalog securable objects and workspace resources.",
+    "6.02": "Apply attribute-based access control (ABAC) policies with governed tags to enforce row filters and column masks at scale.",
+    "6.03": "Apply anonymization and pseudonymization methods (hashing, tokenization, suppression, generalization) to confidential data (e.g., using column masks and related Unity Catalog features).",
+    "6.04": "Implement a compliant data pipeline that enforces PII detection and masking controls across batch and streaming workloads using Unity Catalog features.",
+    "6.05": "Implement a data purging strategy that satisfies data retention and deletion policies (e.g., GDPR right-to-erasure) using Delta Lake and Unity Catalog features."
+   }
+  },
+  {
+   "id": 7,
+   "name": "Data Governance",
+   "weight": 5,
+   "objectives": {
+    "7.01": "Demonstrate understanding of Unity Catalog tags and comments as mechanisms for adding metadata to securable objects to improve data discoverability.",
+    "7.02": "Demonstrate understanding of the Unity Catalog permission inheritance model as a mechanism for managing access control across catalogs, schemas, and objects."
+   }
+  },
+  {
+   "id": 8,
+   "name": "Debugging and Deploying",
+   "weight": 10,
+   "objectives": {
+    "8.01": "Identify pertinent diagnostic information using Spark UI, cluster logs, system tables, and query profiles to troubleshoot errors.",
+    "8.02": "Analyze the errors and remediate the failed job runs with job repairs and parameter overrides.",
+    "8.03": "Use event logs and the Spark UI to debug pipelines and Spark workloads.",
+    "8.04": "Deploy Databricks resources using Declarative Automation Bundles (formerly Databricks Asset Bundles).",
+    "8.05": "Configure Git-based CI/CD workflows using Databricks Git folders (formerly Repos) to deploy notebooks and code."
+   }
+  },
+  {
+   "id": 9,
+   "name": "Data Modeling",
+   "weight": 5,
+   "objectives": {
+    "9.01": "Design scalable Delta/Iceberg table layouts for large data assets by mapping partitioning to data grain, aligning clustering to relationship access patterns, and maintaining balanced file sizes through compaction.",
+    "9.02": "Design dimensional models for analytical workloads, leveraging Materialized Views for pre-computed aggregation and Unity Catalog Metric Views for governed, reusable metric definitions."
+   }
+  }
+ ],
+ "questions": [
+  {
+   "id": "official-01",
+   "objective": "1.06",
+   "section": 1,
+   "stem": "A gold-layer object in a Lakeflow Declarative Pipeline aggregates daily order totals from a bronze source. Downstream BI dashboards read it on a schedule, and the aggregate must always reflect the full history, including late-arriving updates to prior days, not just newly appended rows. Which object should the engineer define?",
+   "options": {
+    "A": "A streaming table, because it processes each source row exactly once and is the lowest-cost option for any aggregation.",
+    "B": "A temporary view, because it always reflects the latest data at query time at no storage cost.",
+    "C": "A materialized view, because it incrementally maintains the full aggregate result, can be refreshed on a schedule, and reflects late-arriving changes.",
+    "D": "A streaming table with a foreachBatch merge, because materialized views cannot perform aggregations."
+   },
+   "answer": "C",
+   "explanation": "A materialized view maintains the full aggregate (incrementally where possible) on refresh, so late updates to earlier days show up. A streaming table only processes newly appended rows and never recomputes the aggregate over history that has changed.",
+   "doc": "https://www.databricks.com/sites/default/files/2026-09/databricks-certified-data-engineer-professional-exam-guide-oct-2026.pdf",
+   "evidence": ""
+  },
+  {
+   "id": "official-02",
+   "objective": "1.12",
+   "section": 1,
+   "stem": "A Structured Streaming query performs an event-time windowed aggregation. It must bound state growth caused by very late events, and it must resume after a driver failure without double-counting results. Which configuration meets both requirements?",
+   "options": {
+    "A": "Set a watermark on the event-time column and rely on the query's checkpoint to restore offsets and state on restart.",
+    "B": "Use complete output mode with no watermark to retain all state for correctness.",
+    "C": "Increase spark.sql.shuffle.partitions and disable checkpointing to speed up recovery.",
+    "D": "Wrap the aggregation in a foreachBatch and manually commit source offsets to a Delta table."
+   },
+   "answer": "A",
+   "explanation": "The watermark lets the engine drop state for events later than the allowed lateness, which bounds state. The checkpoint stores offsets and state, so a restart resumes exactly-once.",
+   "doc": "https://www.databricks.com/sites/default/files/2026-09/databricks-certified-data-engineer-professional-exam-guide-oct-2026.pdf",
+   "evidence": ""
+  },
+  {
+   "id": "official-03",
+   "objective": "2.03",
+   "section": 2,
+   "stem": "A data engineer must continuously replicate insert, update, and delete change events from an operational PostgreSQL database into the lakehouse with minimal custom code. Which approach fits the requirement?",
+   "options": {
+    "A": "Schedule a nightly JDBC full-table read and overwrite the target table each night.",
+    "B": "Configure a Lakeflow Connect managed connector for PostgreSQL to ingest change data capture into the lakehouse.",
+    "C": "Export the database to CSV in cloud storage and ingest the files with Auto Loader.",
+    "D": "Use OpenSharing to share the PostgreSQL tables directly with the lakehouse."
+   },
+   "answer": "B",
+   "explanation": "Lakeflow Connect managed database connectors (SQL Server, MySQL, PostgreSQL) ingest CDC, deletes included, with minimal code. The other options are full reloads or do not apply to an operational RDBMS.",
+   "doc": "https://www.databricks.com/sites/default/files/2026-09/databricks-certified-data-engineer-professional-exam-guide-oct-2026.pdf",
+   "evidence": ""
+  },
+  {
+   "id": "official-04",
+   "objective": "3.02",
+   "section": 3,
+   "stem": "A bronze table stores raw JSON payloads of varying shape in a single string column. The engineer wants efficient storage and fast field extraction without pre-declaring a fixed schema. What should they do?",
+   "options": {
+    "A": "Parse the payloads into a VARIANT column with parse_json and extract fields using variant_get and colon-path access.",
+    "B": "Explode the JSON into one row per key using a fixed STRUCT schema.",
+    "C": "Keep the payloads as STRING and use regexp_extract for each field at query time.",
+    "D": "Convert the JSON to Parquet with a strict, fixed schema before ingestion."
+   },
+   "answer": "A",
+   "explanation": "VARIANT stores semi-structured data in an efficient binary encoding and supports schema-flexible access via parse_json, variant_get and col:path syntax.",
+   "doc": "https://www.databricks.com/sites/default/files/2026-09/databricks-certified-data-engineer-professional-exam-guide-oct-2026.pdf",
+   "evidence": ""
+  },
+  {
+   "id": "official-05",
+   "objective": "4.01",
+   "section": 4,
+   "stem": "A data engineer's team must attribute last month's DBU spend to specific jobs and SQL warehouses and identify the most expensive workloads, using governed data already available in Unity Catalog. Which source should they query?",
+   "options": {
+    "A": "The Spark UI event timeline for each cluster.",
+    "B": "Per-cluster driver logs downloaded from the workspace.",
+    "C": "The system.billing.usage table joined with the compute and pricing system tables in Unity Catalog.",
+    "D": "The account console billing PDF export."
+   },
+   "answer": "C",
+   "explanation": "system.billing.usage (joined with system.billing.list_prices and the compute / lakeflow tables) is governed, queryable usage data that can be attributed to jobs and warehouses.",
+   "doc": "https://www.databricks.com/sites/default/files/2026-09/databricks-certified-data-engineer-professional-exam-guide-oct-2026.pdf",
+   "evidence": ""
+  },
+  {
+   "id": "official-06",
+   "objective": "5.02",
+   "section": 5,
+   "stem": "A data engineer finds that a large Delta table receives frequent small MERGE operations that update and delete individual rows. The team wants to avoid rewriting entire data files on every change while keeping reads fast. Which technique addresses the write amplification?",
+   "options": {
+    "A": "Partition the table by its primary key.",
+    "B": "Enable deletion vectors so updates and deletes are marked at the row level without immediately rewriting whole files.",
+    "C": "Run VACUUM with zero-hour retention after every MERGE.",
+    "D": "Disable predictive optimization to prevent background file rewrites."
+   },
+   "answer": "B",
+   "explanation": "Deletion vectors mark changed or deleted rows without rewriting the whole Parquet file (merge-on-read). Later compaction or REORG applies them.",
+   "doc": "https://www.databricks.com/sites/default/files/2026-09/databricks-certified-data-engineer-professional-exam-guide-oct-2026.pdf",
+   "evidence": ""
+  },
+  {
+   "id": "official-07",
+   "objective": "6.02",
+   "section": 6,
+   "stem": "An organisation has hundreds of tables containing PII and wants a single, centrally managed rule to mask any column tagged 'pii' across all current and future tables, without altering each table individually. What should the data engineer implement?",
+   "options": {
+    "A": "Run a per-table ALTER COLUMN SET MASK statement on every existing table.",
+    "B": "Attach a row filter function to each schema.",
+    "C": "Create dynamic views that duplicate every base table with masking logic.",
+    "D": "Define an ABAC policy that applies a column mask to any column carrying the governed 'pii' tag."
+   },
+   "answer": "D",
+   "explanation": "An ABAC policy keyed on a governed tag applies the mask wherever that tag is present, including tables created later, so one rule covers every table.",
+   "doc": "https://www.databricks.com/sites/default/files/2026-09/databricks-certified-data-engineer-professional-exam-guide-oct-2026.pdf",
+   "evidence": ""
+  },
+  {
+   "id": "official-08",
+   "objective": "7.02",
+   "section": 7,
+   "stem": "A data engineer grants SELECT on a catalog to the analysts group. New schemas and tables are later created in that catalog. Assuming no conflicting grants, what access do the analysts have to the new tables?",
+   "options": {
+    "A": "They can SELECT the new tables, because a privilege granted at the catalog level is inherited by the schemas and objects within it, including ones created later.",
+    "B": "They have no access until SELECT is granted again on each new table.",
+    "C": "They can SELECT only the tables that existed at the time of the grant.",
+    "D": "They automatically gain ownership of the new tables."
+   },
+   "answer": "A",
+   "explanation": "UC privileges inherit down the hierarchy (catalog to schema to object), including objects created after the grant. Note that USE CATALOG / USE SCHEMA are still needed to reach the table.",
+   "doc": "https://www.databricks.com/sites/default/files/2026-09/databricks-certified-data-engineer-professional-exam-guide-oct-2026.pdf",
+   "evidence": ""
+  },
+  {
+   "id": "official-09",
+   "objective": "8.04",
+   "section": 8,
+   "stem": "A data engineer wants the same job and pipeline definitions deployed identically to dev, staging, and prod from source control, with environment-specific overrides and CI/CD. Which approach meets the requirement?",
+   "options": {
+    "A": "Manually recreate the jobs in each workspace UI, then export and import JSON.",
+    "B": "Define the resources in a databricks.yml bundle with per-target overrides and deploy with `databricks bundle deploy -t <target>`.",
+    "C": "Copy notebooks between workspaces using only the workspace import CLI.",
+    "D": "Use a single shared workspace for all environments to avoid configuration drift."
+   },
+   "answer": "B",
+   "explanation": "A bundle (databricks.yml) declares resources with per-target overrides and is deployed with the CLI, so the same definitions go to every environment from Git.",
+   "doc": "https://www.databricks.com/sites/default/files/2026-09/databricks-certified-data-engineer-professional-exam-guide-oct-2026.pdf",
+   "evidence": ""
+  },
+  {
+   "id": "official-10",
+   "objective": "9.02",
+   "section": 9,
+   "stem": "A team computes 'net revenue' with slightly different SQL in each of its dashboards, producing inconsistent numbers. The dashboards are also slow because each recomputes large joins and aggregations at query time. The team needs one authoritative metric definition and pre-aggregated results the dashboards can read directly. Which implementation should the engineer choose?",
+   "options": {
+    "A": "Add a comment on each dashboard describing how to compute net revenue.",
+    "B": "Grant every analyst edit access to a shared SQL snippet file.",
+    "C": "Define net revenue once in a Unity Catalog metric view for a governed, reusable definition, and use materialized views for the pre-computed aggregates the dashboards read.",
+    "D": "Store the metric as a Python UDF copied into each notebook."
+   },
+   "answer": "C",
+   "explanation": "The metric view gives one governed definition of the metric, and materialized views pre-compute the aggregates. Together they fix both the consistency problem and the speed problem.",
+   "doc": "https://www.databricks.com/sites/default/files/2026-09/databricks-certified-data-engineer-professional-exam-guide-oct-2026.pdf",
+   "evidence": ""
+  },
+  {
+   "id": "q-0055",
+   "objective": "1.01",
+   "section": 1,
+   "stem": "A team runs `databricks bundle init` with the default-python template and accepts the sample package. Where should they put the transformation code that must ship as a Python wheel, and how is the wheel produced?",
+   "options": {
+    "A": "In notebooks under resources/; the CLI zips the notebooks into a wheel on deploy",
+    "B": "In src/; the bundle's artifacts build (uv + pyproject.toml) produces the wheel on `bundle deploy`",
+    "C": "In a setup.py at the workspace root; the job builds the wheel at run time on the cluster",
+    "D": "Inline in databricks.yml under a python: block; no build step is needed"
+   },
+   "answer": "B",
+   "explanation": "The template puts packaged code in src/, unit tests in tests/ and job YAML in resources/. The wheel is built by the artifacts build (uv/pyproject) during deploy. Jobs don't build wheels at run time.",
+   "doc": "https://docs.databricks.com/aws/en/dev-tools/bundles/python-wheel",
+   "evidence": "The src/ folder contains the code packaged into the wheel; bundle deploy builds the wheel."
+  },
+  {
+   "id": "q-0056",
+   "objective": "1.01",
+   "section": 1,
+   "stem": "A CI system already produces my_pkg-1.4.0-py3-none-any.whl in ./dist before the bundle step runs. How should databricks.yml be configured so the job uses that wheel without rebuilding it?",
+   "options": {
+    "A": "Keep an artifacts mapping with type: whl and an empty build command",
+    "B": "Upload the wheel manually with the workspace import CLI and hard-code its path",
+    "C": "Omit the artifacts mapping and reference it in the task's libraries, e.g. whl: ./dist/*.whl",
+    "D": "Set experimental.python_wheel_wrapper: true so the CLI skips the build"
+   },
+   "answer": "C",
+   "explanation": "If the wheel is prebuilt, omit artifacts; the CLI deploys the wheels listed in the task's libraries. python_wheel_wrapper is only for DBR 12.2 LTS and below and has nothing to do with skipping builds.",
+   "doc": "https://docs.databricks.com/aws/en/dev-tools/bundles/python-wheel",
+   "evidence": "If a wheel is already built, omit the artifacts mapping; the CLI deploys wheels in the libraries array."
+  },
+  {
+   "id": "q-0057",
+   "objective": "1.02",
+   "section": 1,
+   "stem": "After adding a third-party package to a serverless notebook's Environment, the session stops with an error. The package declares pyspark as a dependency. What is the correct fix?",
+   "options": {
+    "A": "Remove the library and reset the environment; never install PySpark or packages that pull it in on serverless",
+    "B": "Pin pyspark to the same version as the serverless runtime in requirements.txt",
+    "C": "Move the install into an init script so it runs before Spark starts",
+    "D": "Switch the base environment to ML so a compatible PySpark is provided"
+   },
+   "answer": "A",
+   "explanation": "Serverless forbids installing PySpark, directly or transitively. It breaks the session, and the fix is to remove the library and reset the environment. Serverless doesn't support init scripts at all.",
+   "doc": "https://docs.databricks.com/aws/en/compute/serverless/dependencies",
+   "evidence": "Do not install PySpark or any library that installs PySpark as a dependency on your serverless notebooks."
+  },
+  {
+   "id": "q-0058",
+   "objective": "1.02",
+   "section": 1,
+   "stem": "A serverless job installs an internal wheel with a compiled C extension. Most runs succeed, but some fail with an import error for the native module. What is the most likely cause and fix?",
+   "options": {
+    "A": "Wheel caching is stale; clear the cache before every run",
+    "B": "Serverless needs the wheel in a UC volume, not workspace files",
+    "C": "The environment version is too old; upgrade it to the latest",
+    "D": "Serverless doesn't guarantee CPU architecture; publish wheels for both aarch64 and x86_64, or make the package pure Python"
+   },
+   "answer": "D",
+   "explanation": "Serverless may run on aarch64 or x86_64, so native wheels must exist for both, or the package must be py3-none-any. Both workspace files and volumes are valid wheel locations.",
+   "doc": "https://docs.databricks.com/aws/en/compute/serverless/dependencies",
+   "evidence": "Serverless doesn't guarantee CPU architecture (aarch64 or x86_64)."
+  },
+  {
+   "id": "q-0059",
+   "objective": "1.02",
+   "section": 1,
+   "stem": "A team fixes a bug in its internal package, re-uploads the wheel with the same version number to a UC volume, and reruns a serverless job. The job still runs the old code. Why?",
+   "options": {
+    "A": "Serverless jobs can only read wheels from workspace files",
+    "B": "The serverless environment is cached; bump the package version so the change is picked up",
+    "C": "Wheels in volumes need READ FILES granted again after each upload",
+    "D": "The job must be redeployed with performance optimized mode enabled"
+   },
+   "answer": "B",
+   "explanation": "Databricks caches the virtual environment, so an unchanged version isn't reinstalled. Bump the version whenever the implementation changes.",
+   "doc": "https://docs.databricks.com/aws/en/compute/serverless/dependencies",
+   "evidence": "Changing a custom package's implementation requires a version bump for jobs to pick it up."
+  },
+  {
+   "id": "q-0060",
+   "objective": "1.03",
+   "section": 1,
+   "stem": "Analysts must call a governed Unity Catalog Python UDF, finance.utils.mask_iban, from their queries. Which grants are needed, at minimum?",
+   "options": {
+    "A": "SELECT on the function and USE SCHEMA on finance.utils",
+    "B": "MODIFY on the function's schema",
+    "C": "EXECUTE on the function, plus USE CATALOG on finance and USE SCHEMA on finance.utils",
+    "D": "Ownership of the function, or ALL PRIVILEGES on the catalog"
+   },
+   "answer": "C",
+   "explanation": "Functions are governed with EXECUTE, not SELECT, and the caller also needs to traverse the parent catalog and schema. Ownership or ALL PRIVILEGES breaks least privilege.",
+   "doc": "https://docs.databricks.com/aws/en/udf/unity-catalog",
+   "evidence": "To run a UDF, users need EXECUTE permission on the UDF."
+  },
+  {
+   "id": "q-0061",
+   "objective": "1.03",
+   "section": 1,
+   "stem": "A view calls a Unity Catalog Python UDF. Dashboards on a classic SQL warehouse fail on this view, while the same query works in a notebook on serverless. What should the engineer do?",
+   "options": {
+    "A": "Point the dashboards at a serverless or pro SQL warehouse",
+    "B": "Rewrite the UDF as a session-scoped spark.udf.register function",
+    "C": "Grant SELECT on the UDF to the warehouse's service principal",
+    "D": "Mark the UDF DETERMINISTIC so the classic warehouse can cache it"
+   },
+   "answer": "A",
+   "explanation": "UC Python UDFs run on serverless and pro SQL warehouses (and supported classic compute), not on classic SQL warehouses. Session-scoped UDFs can't be used from a governed view.",
+   "doc": "https://docs.databricks.com/aws/en/udf/unity-catalog",
+   "evidence": "If a view includes a Unity Catalog Python UDF, it fails on classic SQL warehouses."
+  },
+  {
+   "id": "q-0062",
+   "objective": "1.04",
+   "section": 1,
+   "stem": "In a SQL Lakeflow pipeline, a bronze table must incrementally ingest new JSON files from a UC volume, processing each file once. Which definition is correct?",
+   "options": {
+    "A": "CREATE OR REFRESH MATERIALIZED VIEW bronze AS SELECT * FROM read_files('/Volumes/raw/events', format => 'json')",
+    "B": "CREATE LIVE TABLE bronze AS SELECT * FROM cloud_files('/Volumes/raw/events', 'json')",
+    "C": "COPY INTO bronze FROM '/Volumes/raw/events' FILEFORMAT = JSON inside the pipeline",
+    "D": "CREATE OR REFRESH STREAMING TABLE bronze AS SELECT * FROM STREAM read_files('/Volumes/raw/events', format => 'json')"
+   },
+   "answer": "D",
+   "explanation": "Incremental file ingestion means a streaming table reading with the STREAM keyword over read_files (Auto Loader). An MV re-reads the source. LIVE TABLE and cloud_files are legacy syntax.",
+   "doc": "https://docs.databricks.com/aws/en/ldp/load",
+   "evidence": "Use FROM STREAM read_files(...) in a CREATE OR REFRESH STREAMING TABLE statement; STREAM reads incrementally."
+  },
+  {
+   "id": "q-0063",
+   "objective": "1.04",
+   "section": 1,
+   "stem": "A Unity Catalog-enabled pipeline uses Auto Loader on s3://landing/orders/. The update fails with a permission error even though the bucket's IAM role is correct. What is missing?",
+   "options": {
+    "A": "An instance profile attached to the pipeline cluster",
+    "B": "An external location covering the path, with READ FILES granted to the user running the pipeline",
+    "C": "A DBFS mount of the bucket under /mnt/orders",
+    "D": "SELECT on the bronze table for the pipeline owner"
+   },
+   "answer": "B",
+   "explanation": "In UC pipelines, Auto Loader reads cloud paths through external locations, and the executing identity needs READ FILES. Instance profiles and DBFS mounts are the pre-UC patterns.",
+   "doc": "https://docs.databricks.com/aws/en/ldp/load",
+   "evidence": "In a Unity Catalog-enabled pipeline, Auto Loader requires external locations; the executing user needs READ FILES."
+  },
+  {
+   "id": "q-0064",
+   "objective": "1.05",
+   "section": 1,
+   "stem": "A GitHub Actions workflow has just run `databricks bundle deploy --target dev` and must now trigger the deployed job sample_job as a smoke test. Which command?",
+   "options": {
+    "A": "databricks jobs submit --json @resources/sample_job.job.yml",
+    "B": "databricks bundle deploy --target dev --run sample_job",
+    "C": "databricks bundle run --target dev sample_job",
+    "D": "databricks workspace run sample_job --target dev"
+   },
+   "answer": "C",
+   "explanation": "bundle run takes the resource key and target and runs the deployed resource. jobs submit creates a one-off run from raw JSON, not the bundle's job.",
+   "doc": "https://docs.databricks.com/aws/en/dev-tools/bundles/python-wheel",
+   "evidence": "databricks bundle run --target dev sample_job runs the deployed job."
+  },
+  {
+   "id": "q-0065",
+   "objective": "1.06",
+   "section": 1,
+   "stem": "A silver dataset joins a high-volume order stream with a customer dimension that is regularly corrected. Reports must show the corrected customer attributes on historical orders too. Which dataset type fits?",
+   "options": {
+    "A": "A materialized view, because it recomputes the join when the dimension changes",
+    "B": "A streaming table, because it processes each order exactly once",
+    "C": "A streaming table with a stream-static join, refreshed hourly",
+    "D": "A temporary view, to avoid storing the joined result"
+   },
+   "answer": "A",
+   "explanation": "Streaming tables don't recompute joins when the dimension changes (the docs call this fast-but-wrong). Materialized views recompute affected results, so they stay correct.",
+   "doc": "https://docs.databricks.com/aws/en/ldp/streaming-tables",
+   "evidence": "Materialized views are always correct because they automatically recompute joins when dimensions change."
+  },
+  {
+   "id": "q-0066",
+   "objective": "1.06",
+   "section": 1,
+   "stem": "Clickstream events arrive from Kafka at very high volume, are never updated, and must reach the lakehouse with low latency at minimal cost. Which dataset type should the bronze layer use?",
+   "options": {
+    "A": "A materialized view refreshed every minute",
+    "B": "A standalone materialized view in Databricks SQL",
+    "C": "A view over read_kafka queried by consumers",
+    "D": "A streaming table, since it suits append-only sources and handles each input row once"
+   },
+   "answer": "D",
+   "explanation": "Append-only, high-volume, low-latency ingest is the streaming table's sweet spot. MV refreshes take seconds to minutes and are not meant for low latency.",
+   "doc": "https://docs.databricks.com/aws/en/ldp/streaming-tables",
+   "evidence": "Streaming tables are designed for append-only data sources and process inputs only once."
+  },
+  {
+   "id": "q-0067",
+   "objective": "1.06",
+   "section": 1,
+   "stem": "An engineer changes a streaming table's query to normalise a country column. New rows look right, but rows ingested last month still show the old values. How should they make all rows consistent?",
+   "options": {
+    "A": "Run OPTIMIZE on the streaming table",
+    "B": "Run a full refresh of the streaming table so all source data is reprocessed",
+    "C": "Convert the table to a materialized view; existing rows update on the next trigger",
+    "D": "Nothing; a normal update reprocesses history automatically"
+   },
+   "answer": "B",
+   "explanation": "A query change applies only to rows processed after the change. A full refresh re-queries all source data. Make sure the source still retains that history first.",
+   "doc": "https://docs.databricks.com/aws/en/ldp/streaming-tables",
+   "evidence": "Changing the query affects only rows processed afterward; reprocessing earlier rows requires a full refresh."
+  },
+  {
+   "id": "q-0068",
+   "objective": "1.07",
+   "section": 1,
+   "stem": "customers_hist is an AUTO CDC target with stored_as_scd_type = 2. How does an analyst select only the current version of each customer?",
+   "options": {
+    "A": "WHERE __END_AT IS NULL",
+    "B": "WHERE __START_AT = (SELECT max(__START_AT) FROM customers_hist)",
+    "C": "WHERE _change_type = 'update_postimage'",
+    "D": "WHERE __is_current = true"
+   },
+   "answer": "A",
+   "explanation": "In SCD2 targets each version has __START_AT and __END_AT; the open version has a null __END_AT. _change_type belongs to Change Data Feed. __is_current doesn't exist.",
+   "doc": "https://docs.databricks.com/aws/en/ldp/cdc",
+   "evidence": "Records with __END_AT = null are currently active."
+  },
+  {
+   "id": "q-0069",
+   "objective": "1.07",
+   "section": 1,
+   "stem": "An AUTO CDC flow uses KEYS (id) and SEQUENCE BY seq. For id 42, an update with seq = 6 is processed, and later a delayed update with seq = 5 arrives. What does the SCD Type 1 target show for id 42?",
+   "options": {
+    "A": "The seq 5 values, because it was processed last",
+    "B": "Both rows, because SCD1 keeps duplicates until compaction",
+    "C": "The seq 6 values; the older seq 5 change is ignored",
+    "D": "The flow fails with a sequencing conflict"
+   },
+   "answer": "C",
+   "explanation": "SEQUENCE BY decides ordering, not arrival time. A change with a lower sequence value doesn't overwrite newer state, so out-of-order events are handled for you.",
+   "doc": "https://docs.databricks.com/aws/en/ldp/cdc",
+   "evidence": "The earlier UPDATE at sequenceNum=5 was dropped because a later update at sequenceNum=6 arrived."
+  },
+  {
+   "id": "q-0070",
+   "objective": "1.07",
+   "section": 1,
+   "stem": "An SCD Type 2 customer table creates a new version every time last_login_ts changes, which bloats history. Only address changes need history. What should the engineer do?",
+   "options": {
+    "A": "Switch the flow to stored_as_scd_type = 1",
+    "B": "Track history only on the address column; other column changes then update the current version in place",
+    "C": "Drop last_login_ts from the source with a filter before the flow",
+    "D": "Add a second AUTO CDC flow into the same target for last_login_ts"
+   },
+   "answer": "B",
+   "explanation": "SCD2 versions on any column change by default. Restricting tracked columns (TRACK HISTORY ON / track_history_column_list) keeps history for address while updating other columns in place. SCD1 would lose address history.",
+   "doc": "https://docs.databricks.com/aws/en/ldp/cdc",
+   "evidence": "Changes to other columns update the current version in place rather than generating a new history record."
+  },
+  {
+   "id": "q-0071",
+   "objective": "1.08",
+   "section": 1,
+   "stem": "A team is building new bronze→silver→gold ETL. They want the engine to manage table dependencies, incremental processing and orchestration, and they have no unusual sinks. Which approach do the Databricks docs recommend?",
+   "options": {
+    "A": "Hand-written Structured Streaming queries scheduled as separate jobs",
+    "B": "Stored procedures run from a SQL warehouse",
+    "C": "Notebooks with spark.read and MERGE, chained via job dependencies",
+    "D": "Lakeflow pipelines (built on Apache Spark Declarative Pipelines)"
+   },
+   "answer": "D",
+   "explanation": "Pipelines are the recommended default for new ETL. You declare datasets and the engine handles dependencies, incremental processing and orchestration. Drop down to Structured Streaming only when you need control the pipeline can't give you.",
+   "doc": "https://docs.databricks.com/aws/en/data-engineering/choose-etl-approach",
+   "evidence": "Lakeflow pipelines is the recommended default for most ETL work."
+  },
+  {
+   "id": "q-0072",
+   "objective": "1.08",
+   "section": 1,
+   "stem": "A stream must upsert each micro-batch into a Delta table AND write the same batch to an external Cassandra cluster that has no streaming sink, with custom idempotency logic. Which approach fits best?",
+   "options": {
+    "A": "A Spark Structured Streaming query with foreachBatch",
+    "B": "A streaming table with an expect_or_drop expectation",
+    "C": "A materialized view with a scheduled refresh",
+    "D": "An AUTO CDC flow targeting Cassandra"
+   },
+   "answer": "A",
+   "explanation": "foreachBatch lets you apply batch writers (MERGE, sinks without streaming support) per micro-batch with your own idempotency. Pipeline datasets don't give that level of control over arbitrary external sinks.",
+   "doc": "https://docs.databricks.com/aws/en/structured-streaming/foreach",
+   "evidence": "Delta Lake MERGE upserts from streaming queries require foreachBatch; existing batch writers can serve sinks like Cassandra."
+  },
+  {
+   "id": "q-0073",
+   "objective": "1.09",
+   "section": 1,
+   "stem": "An If/else condition task checks `{{job.parameters.threshold}} == 12`. The job is triggered with threshold = \"12.0\". Which branch runs?",
+   "options": {
+    "A": "The true branch, because 12.0 and 12 are numerically equal",
+    "B": "Neither; the task fails because the operand is a decimal",
+    "C": "Both; the condition is skipped when types differ",
+    "D": "The false branch, because == compares the operands as strings"
+   },
+   "answer": "D",
+   "explanation": "== and != compare as strings, so '12.0' isn't '12'. The >, >=, < and <= operators compare numerically. Use >= and <= if you need numeric equality.",
+   "doc": "https://docs.databricks.com/aws/en/jobs/if-else",
+   "evidence": "The == and != operators perform string comparison of their operands."
+  },
+  {
+   "id": "q-0074",
+   "objective": "1.09",
+   "section": 1,
+   "stem": "A For each task iterates over 40 table names from a task value and runs a notebook per table. Runs take far too long because iterations execute one after another. What should the engineer change?",
+   "options": {
+    "A": "Raise the For each task's Concurrency setting above its default of 1",
+    "B": "Nest a second For each task inside the first to split the list",
+    "C": "Convert the task value to a job parameter, which runs iterations in parallel",
+    "D": "Set the job's max concurrent runs to 40"
+   },
+   "answer": "A",
+   "explanation": "Iterations run sequentially by default (concurrency 1). Nested For each tasks aren't allowed. Max concurrent runs controls whole job runs, not iterations.",
+   "doc": "https://docs.databricks.com/aws/en/jobs/for-each",
+   "evidence": "Concurrency: the default value is 1."
+  },
+  {
+   "id": "q-0075",
+   "objective": "1.10",
+   "section": 1,
+   "stem": "A serverless job sends one payment-confirmation email per run and is not idempotent. It must never run its task twice, even if a run fails. What should the engineer configure?",
+   "options": {
+    "A": "Enable performance optimized mode so failures are less likely",
+    "B": "Set max concurrent runs to 1 on the job",
+    "C": "Disable serverless auto-optimization on the task, since it may add retries",
+    "D": "Wrap the notebook in try/except and swallow all errors"
+   },
+   "answer": "C",
+   "explanation": "Serverless auto-optimization is on by default and can retry failed tasks. Disable it for at-most-once workloads. Max concurrent runs doesn't stop retries.",
+   "doc": "https://docs.databricks.com/aws/en/jobs/run-serverless-jobs",
+   "evidence": "Auto-optimization optimizes compute and retries failed tasks; disable it for jobs that must run at most once."
+  },
+  {
+   "id": "q-0076",
+   "objective": "1.10",
+   "section": 1,
+   "stem": "A nightly serverless batch job has a 6-hour SLA, and the team wants to minimise cost. Which setting fits?",
+   "options": {
+    "A": "Standard performance mode (performance optimized disabled), accepting slower startup for fewer DBUs",
+    "B": "Performance optimized mode, because it uses a cheaper SKU",
+    "C": "High memory for every task",
+    "D": "Classic job compute with autoscaling disabled"
+   },
+   "answer": "A",
+   "explanation": "Both modes use the same SKU; standard mode uses less compute and fewer DBUs, with startup latency of a few minutes. Performance optimized is for time-sensitive workloads.",
+   "doc": "https://docs.databricks.com/aws/en/jobs/run-serverless-jobs",
+   "evidence": "Standard mode uses less compute to reduce costs; both modes use the same SKU."
+  },
+  {
+   "id": "q-0077",
+   "objective": "1.10",
+   "section": 1,
+   "stem": "A serverless notebook task that collects a large intermediate result to pandas keeps failing with out-of-memory errors. The other tasks in the job are fine. What is the targeted fix?",
+   "options": {
+    "A": "Set spark.driver.memory in the job's Spark config",
+    "B": "Move the whole job to a classic cluster with a bigger driver",
+    "C": "Increase spark.sql.shuffle.partitions for the job",
+    "D": "Set Memory to high in that notebook's Environment side pane"
+   },
+   "answer": "D",
+   "explanation": "Serverless lets you raise memory per notebook task (high memory, configured in the Environment pane). Arbitrary driver Spark confs can't be set on serverless.",
+   "doc": "https://docs.databricks.com/aws/en/jobs/run-serverless-jobs",
+   "evidence": "High memory is configured with the Memory setting in the notebook's Environment side pane; notebook tasks only."
+  },
+  {
+   "id": "q-0078",
+   "objective": "1.11",
+   "section": 1,
+   "stem": "A unit test calls assertDataFrameEqual(actual, expected) on a 200-million-row output, and the driver crashes with OutOfMemoryError. What is the best remedy?",
+   "options": {
+    "A": "Increase the number of executors so the comparison is distributed",
+    "B": "Use assertSchemaEqual to check structure, and compare rows on small fixture DataFrames rather than full-scale outputs",
+    "C": "Set checkRowOrder=True to stream the comparison",
+    "D": "Cache both DataFrames before calling assertDataFrameEqual"
+   },
+   "answer": "B",
+   "explanation": "assertDataFrameEqual collects both DataFrames to the driver, so test transformations on small, representative fixtures. assertSchemaEqual compares schemas only, which is cheap.",
+   "doc": "https://kb.databricks.com/python/using-pyspark-testing-library-assertdataframeequal-throws-outofmemoryerror",
+   "evidence": "assertDataFrameEqual calls .collect() on the actual and expected DataFrames."
+  },
+  {
+   "id": "q-0079",
+   "objective": "1.11",
+   "section": 1,
+   "stem": "How do the Databricks docs recommend organising PySpark transformation logic so it can be unit tested with pytest?",
+   "options": {
+    "A": "Keep functions in notebooks and use %run to load them into a test notebook",
+    "B": "Test functions against production tables so results are realistic",
+    "C": "Put functions in regular .py files outside notebooks, with test_*.py pytest files that run on small fake data",
+    "D": "Use the web terminal to run pytest against the cluster"
+   },
+   "answer": "C",
+   "explanation": "Put functions and tests in files (functions written as chainable DataFrame -> DataFrame steps, e.g. via DataFrame.transform), and run pytest from a notebook or CI against fake data. Don't test against production. %run is the Scala-style pattern.",
+   "doc": "https://docs.databricks.com/aws/en/notebooks/testing",
+   "evidence": "Databricks recommends storing functions and their unit tests outside notebooks, in regular files."
+  },
+  {
+   "id": "q-0080",
+   "objective": "1.12",
+   "section": 1,
+   "stem": "Two streams are joined with a LEFT OUTER stream-stream join to a Delta sink. What is required for this query?",
+   "options": {
+    "A": "Complete output mode, with a watermark on the left side only",
+    "B": "Update output mode, with no watermark",
+    "C": "A watermark on the right side only, in any output mode",
+    "D": "Watermarks on both inputs, with append output mode"
+   },
+   "answer": "D",
+   "explanation": "Stream-stream joins support only append mode. Watermarks are mandatory for outer joins (to know when a non-match is final) and recommended for inner joins.",
+   "doc": "https://docs.databricks.com/aws/en/structured-streaming/watermarks",
+   "evidence": "Stream-stream joins support only append mode; a watermark is mandatory for outer joins."
+  },
+  {
+   "id": "q-0081",
+   "objective": "1.12",
+   "section": 1,
+   "stem": "A foreachBatch function MERGEs each micro-batch into a Delta table. The team needs a retried micro-batch never to apply its writes twice. What should they do?",
+   "options": {
+    "A": "Nothing; foreachBatch is exactly-once by default",
+    "B": "Write with the txnAppId and txnVersion options, setting txnVersion to batchId",
+    "C": "Disable the checkpoint so batches aren't replayed",
+    "D": "Catch exceptions inside the function and retry locally"
+   },
+   "answer": "B",
+   "explanation": "foreachBatch is only at-least-once by default. Idempotent Delta writes keyed on (txnAppId, batchId) skip replays. Let errors propagate so the whole batch is retried; don't retry locally.",
+   "doc": "https://docs.databricks.com/aws/en/structured-streaming/foreach",
+   "evidence": "foreachBatch provides only at-least-once write guarantees by default."
+  },
+  {
+   "id": "q-0082",
+   "objective": "1.12",
+   "section": 1,
+   "stem": "A 10-minute tumbling-window count uses withWatermark('event_ts', '15 minutes') and append output mode. When is the result for the 12:00–12:10 window written to the sink?",
+   "options": {
+    "A": "Once the watermark passes the window end, i.e. after events with event_ts beyond about 12:25 have been seen",
+    "B": "Immediately at 12:10, then updated as late events arrive",
+    "C": "On every trigger, rewriting the full result table",
+    "D": "Only when the query is stopped"
+   },
+   "answer": "A",
+   "explanation": "Append mode emits a window once, after the watermark (max event time minus 15 minutes) passes the window end, so output lags by the threshold. B describes update mode; C describes complete mode.",
+   "doc": "https://docs.databricks.com/aws/en/structured-streaming/watermarks",
+   "evidence": "In append mode, rows are written only after the watermark threshold passes."
+  }
+ ]
+}
